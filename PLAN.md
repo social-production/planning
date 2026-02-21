@@ -105,7 +105,21 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
   - Propose rules for distribution
   - Propose changes to the project
   - Vote on proposal
-- All funders of a project become project members
-- Project members can be added from the general pool of users
-- A general user can join a project
-- Membership to a project can be voted on
+- All users can join a project and become a member
+- Project members are given a role:
+  - Manager
+    - Can edit
+    - Can post updates
+    - Can manage events
+    - Can make proposals
+    - Can vote on proposals
+    - Can create or edit project collective funds
+    - Can make a member a manager
+  - Member
+    - Can make proposals
+    - Can vote on proposals
+- Voting rules
+  - A threshold of 70% must be yes for a vote to pass
+  - A minimum of 20% of the members must vote for a vote to pass
+  - A vote must be passed to remove a manager (e.g. the creator of the project)
+  - A vote must be passed to promote a member to a manager
