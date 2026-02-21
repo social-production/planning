@@ -97,3 +97,20 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
     - Sync based on a time range
     - Sync based on file size or disk availability
     - Sync on demand
+
+## Organization and project governance
+
+- All members of an organization can:
+  - Propose new projects or changes to projects
+  - Vote on proposals
+- All members of a project can:
+  - Propose rules for distribution
+  - Propose changes to the project
+  - Vote on proposal
+- All funders of a project become project members
+- All members of an organization can become members of a project
+- Project members can be added from the general pool of users
+- Organization members can be added from the general pool of users
+- A general user can voluntarily join a project
+- A general user can request membership to an organization
+- Membership to a organization or project can be voted on
