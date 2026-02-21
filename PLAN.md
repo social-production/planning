@@ -114,7 +114,7 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
     - Can make proposals
     - Can vote on proposals
     - Can create or edit project collective funds
-    - Can make a member a manager
+    - Can make a proposal to make a member a manager
   - Member
     - Can make proposals
     - Can vote on proposals
