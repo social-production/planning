@@ -38,7 +38,7 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
 - Automate the distributions of funding and project produce
 - Build a communication system to discuss the governance
 - Provide for events driven by projects
-- Geofence projects and users to help with the distribution at a local level
+- Location-based feed filtering to help users discover nearby projects
 - Offer full transparency on all transactions (project changes, funding events, distributions, etc.) made
 
 ## Architecture
