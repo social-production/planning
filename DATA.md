@@ -181,7 +181,7 @@ erDiagram
 
     PRODUCTS {
         uuid id PK
-        uuid project_id FK "post with type=project"
+        uuid post_id FK "project post"
         string name
         decimal amount
         timestamptz created_at
@@ -250,12 +250,10 @@ erDiagram
 
     PRODUCTS ||--o{ PRODUCT_LINKS : "has"
     PRODUCTS ||--o{ PRODUCT_DISTRIBUTIONS : "distributed via"
+    PRODUCT_LINKS ||--|| ASSETS : "references"
 
-    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracked by"
-    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivered to"
-    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_LINKS : "fulfilled by"
-
-    ASSETS ||--o{ PRODUCT_LINKS : "referenced by"
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracks"
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivers to"
 ```
 
 #### Polymorphic Associations
@@ -287,43 +285,19 @@ erDiagram
         uuid id PK
         string addressable_type "user_address | user_email | product_link"
         string addressable_id FK
+        uuid product_distribution_id FK
     }
 
-    USERS {
-        string id PK
-    }
-
-    USER_ADDRESSES {
-        uuid id PK
-    }
-
-    USER_EMAILS {
-        uuid id PK
-    }
-
-    POSTS {
-        uuid id PK
-    }
-
-    POST_UPDATES {
-        uuid id PK
-    }
-
-    POST_PROPOSALS {
-        uuid id PK
-    }
-
-    POST_EVENTS {
-        uuid id PK
-    }
-
-    PRODUCTS {
-        uuid id PK
-    }
-
-    PRODUCT_LINKS {
-        uuid id PK
-    }
+    USERS { string id PK }
+    POSTS { uuid id PK }
+    POST_UPDATES { uuid id PK }
+    POST_PROPOSALS { uuid id PK }
+    POST_EVENTS { uuid id PK }
+    PRODUCTS { uuid id PK }
+    PRODUCT_LINKS { uuid id PK }
+    USER_ADDRESSES { uuid id PK }
+    USER_EMAILS { uuid id PK }
+    PRODUCT_DISTRIBUTIONS { uuid id PK }
 
     USERS ||--o{ ASSETS : "owns (owner_type=user)"
     POSTS ||--o{ ASSETS : "owns (owner_type=post)"
@@ -339,9 +313,124 @@ erDiagram
     POST_PROPOSALS ||--o{ VOTES : "receives (resource_type=council)"
     USERS ||--o{ VOTES : "casts"
 
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "has"
     USER_ADDRESSES ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_address)"
     USER_EMAILS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_email)"
     PRODUCT_LINKS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=product_link)"
+```
+
+#### Product Distributions
+
+How a product created by a project gets distributed to a user.
+
+```mermaid
+erDiagram
+    POSTS {
+        uuid id PK
+        string type "project | post"
+        string project_status "producing | completed | distributed"
+    }
+
+    PRODUCTS {
+        uuid id PK
+        uuid post_id FK
+        string name
+        decimal amount
+        timestamptz depleted_at
+    }
+
+    ASSETS {
+        uuid id PK
+        string owner_type "product | product_link"
+        string owner_id FK
+        string name
+        string mime_type
+    }
+
+    PRODUCT_LINKS {
+        uuid id PK
+        uuid product_id FK
+        uuid product_distribution_id FK
+        uuid asset_id FK
+        string name
+        boolean downloaded
+    }
+
+    PRODUCT_DISTRIBUTIONS {
+        uuid id PK
+        uuid product_id FK
+        string user_id FK
+        decimal amount
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PRODUCT_DISTRIBUTION_STATUSES {
+        uuid id PK
+        uuid product_distribution_id FK
+        string status "preparing | shipped | received | downloaded | cancelled | returned"
+        timestamptz created_at
+    }
+
+    PRODUCT_DISTRIBUTION_ADDRESSES {
+        uuid id PK
+        uuid product_distribution_id FK
+        string addressable_type "user_address | user_email | product_link"
+        string addressable_id FK
+    }
+
+    USER_ADDRESSES {
+        uuid id PK
+        string user_id FK
+        string address_line_1
+        string city
+        string state
+        string postal_code
+    }
+
+    USER_EMAILS {
+        uuid id PK
+        string user_id FK
+        string address
+    }
+
+    USERS {
+        string id PK
+    }
+
+    POSTS ||--o{ PRODUCTS : "produces"
+    PRODUCTS ||--o{ ASSETS : "has (owner_type=product)"
+    PRODUCTS ||--o{ PRODUCT_LINKS : "has"
+    PRODUCTS ||--o{ PRODUCT_DISTRIBUTIONS : "allocated via"
+
+    PRODUCT_LINKS ||--|| ASSETS : "references"
+    PRODUCT_LINKS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivered via (addressable_type=product_link)"
+
+    USERS ||--o{ PRODUCT_DISTRIBUTIONS : "receives"
+    USERS ||--o{ USER_ADDRESSES : "has"
+    USERS ||--o{ USER_EMAILS : "has"
+
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracks"
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivers to"
+
+    USER_ADDRESSES ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_address)"
+    USER_EMAILS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_email)"
+```
+
+**Distribution lifecycle** — a status record is appended each time the distribution state changes:
+
+```mermaid
+stateDiagram-v2
+    [*] --> preparing : distribution created
+    preparing --> shipped : physical product dispatched
+    preparing --> downloaded : digital product downloaded
+    shipped --> received : user confirms receipt
+    downloaded --> [*]
+    received --> [*]
+    preparing --> cancelled : cancelled before dispatch
+    shipped --> returned : user returns item
+    returned --> [*]
+    cancelled --> [*]
 ```
 
 ### Users
