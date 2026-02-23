@@ -1,4 +1,4 @@
-# Social Production
+# Social Production Plan
 
 A community platform for organising collective projects, pooling resources, and building things together.
 
