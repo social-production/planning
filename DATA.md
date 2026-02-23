@@ -252,6 +252,7 @@ erDiagram
     PRODUCTS ||--o{ PRODUCT_DISTRIBUTIONS : "distributed via"
     PRODUCT_LINKS ||--|| ASSETS : "references"
 
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_LINKS : "assigns"
     PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracks"
     PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivers to"
 ```
@@ -410,6 +411,7 @@ erDiagram
     USERS ||--o{ USER_ADDRESSES : "has"
     USERS ||--o{ USER_EMAILS : "has"
 
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_LINKS : "assigns"
     PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracks"
     PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivers to"
 
@@ -663,13 +665,12 @@ stateDiagram-v2
 
 ### Product Distributions
 
--Have
-
-- An ID using UUID
-- A user ID
-- A product ID
-- A project ID through products
-- An amount
-- A created at timestamp with time zone
-- An updated at timestamp with time zone
-- Many product distribution statuses
+- Have
+  - An ID using UUID
+  - A user ID
+  - A product ID
+  - A project ID through products
+  - An amount
+  - A created at timestamp with time zone
+  - An updated at timestamp with time zone
+  - Many product distribution statuses
