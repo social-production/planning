@@ -112,3 +112,7 @@ Syncing is limited to syncing everything but the content.
 #### Syncing Workflow
 
 ![Syncing Workflow](docs/diagrams/system-syncing-workflow.png)
+
+#### Connections Workflow
+
+![Connections Workflow](docs/diagrams/system-connections-workflow.png)
