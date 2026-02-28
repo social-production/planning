@@ -9,7 +9,14 @@ graph TB
                     INDEXES["Indexes"]
                 end
             end
-            USERS["Users"]
+            subgraph CONNECTIONS["Connections"]
+                subgraph USERS["User"]
+                    USRMETA["Meta Date"]
+                    USRPRV["Private Key"]
+                    USRPUB["Public Key"]
+                    USRSHRD["Shared Key"]
+                end
+            end
         end
         subgraph DISC["Discovery"]
             KNOWN["Known Peers"]

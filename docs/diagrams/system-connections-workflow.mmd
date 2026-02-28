@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant Node
+    participant Peer
+
+    Node->>Peer: createConnection <public key>
+    note over Node,Peer: waiting for response...
+
+    alt rejected
+        Peer-->Node: rejected
+        note over Node: done
+    else accepted
+        Peer->>Peer: generateSharedKey
+        Peer-->>Node: publicKey
+        Node->>Node: generateSharedKey
+        note over Node: done
+    end
