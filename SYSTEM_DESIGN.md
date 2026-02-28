@@ -99,52 +99,116 @@ Syncing is limited to syncing everything but the content.
 
 #### Network
 
-```ascii
-+=====================================+
-|               Network               |
-|  +=============+   +=============+  |
-|  | Node 1      |<->| Node n...   |  |
-|  +=============+   +=============+  |
-|                                     |
-+=====================================+
+```mermaid
+graph LR
+    subgraph Network
+        N1[Node 1] <--> N2[Node 2]
+        N2 <--> Nn[Node n...]
+        N1 <--> Nn
+    end
 ```
 
 #### Node Stack
 
-```ascii
-+===========================================================================+
-|                                     Node                                  |
-+===========================================================================+
-| Syncing                             | Discovery   | User Management       |
-|-------------------------------------|-------------|-----------------------|
-| Database                    | Users | Known Peers | Node User | Meta Data |
-|-----------------------------|       |             |           |           |
-| Content | Indexing          |       |             |           |           |
-|         |-------------------|       |             |           |           |
-|         | Current | Indexes |       |             |           |           |
-+===========================================================================+
+```mermaid
+graph TB
+    subgraph NODE["Node"]
+        subgraph SYNC["Syncing"]
+            subgraph DB["Database"]
+                CONTENT["Content"]
+                subgraph IDX["Indexing"]
+                    CURRENT["Current"]
+                    INDEXES["Indexes"]
+                end
+            end
+            USERS["Users"]
+        end
+        subgraph DISC["Discovery"]
+            KNOWN["Known Peers"]
+        end
+        subgraph UM["User Management"]
+            NUSER["Node User"]
+            META["Meta Data"]
+        end
+    end
 ```
 
 #### Discovery Workflow
 
-```ascii
-+==========================================+
-| API         | Known Peers | Network      |
-+==========================================+
-|             |             |              |
-| findPeers ----------------->             |
-|..........................................|
-|           <---------------- peerResponse |
-| savePeer --->             |              |
-| sync ---------------------->             |
-+==========================================+
-| joinNetwork -------------->              |
-|           <---------------- acknowledged |
-| sync --------------------->              |
-+==========================================+
+```mermaid
+sequenceDiagram
+    participant API
+    participant KnownPeers as Known Peers
+    participant Network
+
+    note over API,Network: Peer Discovery
+    API->>Network: findPeers
+    Network-->>API: peerResponse
+    API->>KnownPeers: savePeer
+    API->>Network: sync
+
+    note over API,Network: Join Network
+    API->>Network: joinNetwork
+    Network-->>API: sync
 ```
 
 #### Syncing Workflow
 
-```ascii
+```mermaid
+sequenceDiagram
+    participant API
+    participant KnownPeers as Known Peers
+    participant Storage
+    participant Network
+
+    API->>Network: sendCurrent
+    Network->>Network: compareCurrent
+    note over API,Network: async...
+
+    alt current
+        Network-->>API: current
+        note over API: done
+
+    else not current
+        Network-->>API: current
+        API->>Network: getChain
+        note over API,Network: async...
+        Network-->>API: chain
+        API->>Network: verifyChain
+        Network-->>API: chainStatus
+        note over API,Network: async...
+
+        alt not verified
+            note over API: done
+
+        else verified
+            API->>API: isIndexed
+
+            alt indexed
+                API->>Network: sync
+                note over API: done
+
+            else not indexed
+                API->>Storage: updateCurrent
+                API->>Storage: updateIndexes
+                API->>Network: getPeers
+                note over API,Network: async...
+                Network-->>API: peers
+                API->>Storage: updatePeers
+                API->>Network: getLatest
+                note over API,Network: async...
+                Network-->>API: latestTree
+                API->>Storage: updateTree
+                API->>Network: getData
+                note over API,Network: async...
+                Network-->>API: latestData
+                API->>Storage: updateData
+                API->>Network: getContent
+                note over API,Network: async...
+                Network-->>API: latestContent
+                API->>Storage: updateContent
+                note over API: done
+            end
+        end
+    end
 ```
