@@ -6,23 +6,23 @@
 
 #### Entity Relationship Diagram
 
-![Entity Relationship Diagram](images/data-erd.png)
+![Entity Relationship Diagram](docs/diagrams/data-erd.png)
 
 #### Polymorphic Associations
 
 These four tables use `type`/`id` pairs to associate with multiple parent entities.
 
-![Polymorphic Associations](images/data-polymorphic.png)
+![Polymorphic Associations](docs/diagrams/data-polymorphic.png)
 
 #### Product Distributions
 
 How a product created by a project gets distributed to a user.
 
-![Product Distributions](images/data-product-distributions.png)
+![Product Distributions](docs/diagrams/data-product-distributions.png)
 
 **Distribution lifecycle** — a status record is appended each time the distribution state changes:
 
-![Distribution Lifecycle](images/data-distribution-lifecycle.png)
+![Distribution Lifecycle](docs/diagrams/data-distribution-lifecycle.png)
 
 ### Users
 
