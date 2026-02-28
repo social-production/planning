@@ -99,16 +99,16 @@ Syncing is limited to syncing everything but the content.
 
 #### Network
 
-![Network Diagram](images/system-network.png)
+![Network Diagram](docs/diagrams/system-network.png)
 
 #### Node Stack
 
-![Node Stack](images/system-node-stack.png)
+![Node Stack](docs/diagrams/system-node-stack.png)
 
 #### Discovery Workflow
 
-![Discovery Workflow](images/system-discovery-workflow.png)
+![Discovery Workflow](docs/diagrams/system-discovery-workflow.png)
 
 #### Syncing Workflow
 
-![Syncing Workflow](images/system-syncing-workflow.png)
+![Syncing Workflow](docs/diagrams/system-syncing-workflow.png)

@@ -33,10 +33,6 @@ sequenceDiagram
             else not indexed
                 API->>Storage: updateCurrent
                 API->>Storage: updateIndexes
-                API->>Network: getPeers
-                note over API,Network: async...
-                Network-->>API: peers
-                API->>Storage: updatePeers
                 API->>Network: getLatest
                 note over API,Network: async...
                 Network-->>API: latestTree
