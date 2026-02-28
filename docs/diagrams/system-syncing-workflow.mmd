@@ -4,16 +4,15 @@ sequenceDiagram
     participant Storage
     participant Network
 
-    API->>Network: sendCurrent
-    Network->>Network: compareCurrent
+    API->>Network: getCurrent
+    Network->>API: current
     note over API,Network: async...
+    API->>API: compareCurrent
 
     alt current
-        Network-->>API: current
         note over API: done
 
     else not current
-        Network-->>API: current
         API->>Network: getChain
         note over API,Network: async...
         Network-->>API: chain
