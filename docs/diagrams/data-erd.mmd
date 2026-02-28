@@ -1,0 +1,248 @@
+erDiagram
+    USERS {
+        string id PK "device/mobile ID"
+        string display_name
+        string password_hash
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    USER_ADDRESSES {
+        uuid id PK
+        string user_id FK
+        string name
+        string address_line_1
+        string address_line_2
+        string city
+        string state
+        string postal_code
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    USER_EMAILS {
+        uuid id PK
+        string user_id FK
+        string name
+        string address
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    ASSETS {
+        uuid id PK
+        string name
+        string mime_type
+        string owner_id FK "polymorphic"
+        string owner_type "user | post | product | product_link"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    CONTENT {
+        uuid id PK
+        text content
+        string parent_type "post | comment | event | update | proposal"
+        string parent_id FK "polymorphic"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    VOTES {
+        uuid id PK
+        string user_id FK
+        string indicator "up | down"
+        string resource_type "post | comment | council"
+        string resource_id FK "polymorphic"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    TAGS {
+        uuid id PK
+        string name
+    }
+
+    POST_TAGS {
+        uuid post_id FK
+        uuid tag_id FK
+    }
+
+    POSTS {
+        uuid id PK
+        string title
+        string project_type "production | service | living_condition"
+        string project_location
+        string project_status "researching | funding | producing | completed | cancelled | distributed"
+        string type "project | post"
+        string user_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    POST_UPDATES {
+        uuid id PK
+        uuid post_id FK
+        string user_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    POST_MEMBERS {
+        uuid id PK
+        string user_id FK
+        uuid post_id FK
+        string role "manager | member"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    POST_PROPOSALS {
+        uuid id PK
+        string title
+        string user_id FK
+        uuid post_id FK
+        string status "proposed | approved | not_approved | cancelled"
+    }
+
+    POST_EVENTS {
+        uuid id PK
+        uuid post_id FK
+        string status "planned | completed | cancelled"
+        text location
+        timestamptz start_time
+        timestamptz end_time
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    RSVPS {
+        uuid id PK
+        string response "yes | no | maybe"
+        string user_id FK
+        uuid post_event_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    POST_FUND_DRIVES {
+        uuid id PK
+        uuid post_id FK
+        string title
+        string status "funding | funded | cancelled"
+        timestamptz start_time
+        timestamptz end_time
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    POST_FUNDS {
+        uuid id PK
+        string currency
+        decimal amount
+        string status "funded | withdrawn | cancelled"
+        string user_id FK
+        uuid post_fund_drive_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+    }
+
+    CHANNELS {
+        uuid id PK
+        string name
+        varchar icon
+    }
+
+    CHANNEL_POSTS {
+        uuid channel_id FK
+        uuid post_id FK
+    }
+
+    PRODUCTS {
+        uuid id PK
+        uuid post_id FK "project post"
+        string name
+        decimal amount
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz depleted_at
+    }
+
+    PRODUCT_LINKS {
+        uuid id PK
+        string name
+        uuid product_id FK
+        uuid product_distribution_id FK
+        uuid asset_id FK
+        boolean downloaded
+    }
+
+    PRODUCT_DISTRIBUTIONS {
+        uuid id PK
+        string user_id FK
+        uuid product_id FK
+        decimal amount
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PRODUCT_DISTRIBUTION_STATUSES {
+        uuid id PK
+        uuid product_distribution_id FK
+        string status "preparing | shipped | received | downloaded | cancelled | returned"
+        timestamptz created_at
+    }
+
+    PRODUCT_DISTRIBUTION_ADDRESSES {
+        uuid id PK
+        uuid product_distribution_id FK
+        string addressable_type "user_address | user_email | product_link"
+        string addressable_id FK "polymorphic"
+    }
+
+    USERS ||--o{ USER_ADDRESSES : "has"
+    USERS ||--o{ USER_EMAILS : "has"
+    USERS ||--o{ POSTS : "creates"
+    USERS ||--o{ POST_MEMBERS : "joins as"
+    USERS ||--o{ POST_UPDATES : "writes"
+    USERS ||--o{ POST_PROPOSALS : "submits"
+    USERS ||--o{ RSVPS : "makes"
+    USERS ||--o{ POST_FUNDS : "contributes"
+    USERS ||--o{ VOTES : "casts"
+    USERS ||--o{ PRODUCT_DISTRIBUTIONS : "receives"
+
+    POSTS ||--o{ POST_MEMBERS : "has"
+    POSTS ||--o{ POST_UPDATES : "has"
+    POSTS ||--o{ POST_PROPOSALS : "has"
+    POSTS ||--o{ POST_EVENTS : "has"
+    POSTS ||--o{ POST_FUND_DRIVES : "has"
+    POSTS ||--o{ POST_TAGS : "tagged with"
+    POSTS ||--o{ PRODUCTS : "produces"
+
+    TAGS ||--o{ POST_TAGS : "applied via"
+
+    POST_EVENTS ||--o{ RSVPS : "receives"
+    POST_FUND_DRIVES ||--o{ POST_FUNDS : "collects"
+
+    CHANNELS ||--o{ CHANNEL_POSTS : "contains"
+    POSTS ||--o{ CHANNEL_POSTS : "listed in"
+
+    PRODUCTS ||--o{ PRODUCT_LINKS : "has"
+    PRODUCTS ||--o{ PRODUCT_DISTRIBUTIONS : "distributed via"
+    PRODUCT_LINKS ||--|| ASSETS : "references"
+
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_LINKS : "assigns"
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_STATUSES : "tracks"
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "delivers to"

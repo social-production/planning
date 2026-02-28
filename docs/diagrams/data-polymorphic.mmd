@@ -1,0 +1,56 @@
+erDiagram
+    ASSETS {
+        uuid id PK
+        string owner_type "user | post | product | product_link"
+        string owner_id FK
+    }
+
+    CONTENT {
+        uuid id PK
+        string parent_type "post | comment | event | update | proposal"
+        string parent_id FK
+    }
+
+    VOTES {
+        uuid id PK
+        string resource_type "post | comment | council"
+        string resource_id FK
+        string user_id FK
+    }
+
+    PRODUCT_DISTRIBUTION_ADDRESSES {
+        uuid id PK
+        string addressable_type "user_address | user_email | product_link"
+        string addressable_id FK
+        uuid product_distribution_id FK
+    }
+
+    USERS { string id PK }
+    POSTS { uuid id PK }
+    POST_UPDATES { uuid id PK }
+    POST_PROPOSALS { uuid id PK }
+    POST_EVENTS { uuid id PK }
+    PRODUCTS { uuid id PK }
+    PRODUCT_LINKS { uuid id PK }
+    USER_ADDRESSES { uuid id PK }
+    USER_EMAILS { uuid id PK }
+    PRODUCT_DISTRIBUTIONS { uuid id PK }
+
+    USERS ||--o{ ASSETS : "owns (owner_type=user)"
+    POSTS ||--o{ ASSETS : "owns (owner_type=post)"
+    PRODUCTS ||--o{ ASSETS : "owns (owner_type=product)"
+    PRODUCT_LINKS ||--o{ ASSETS : "owns (owner_type=product_link)"
+
+    POSTS ||--o{ CONTENT : "has (parent_type=post)"
+    POST_UPDATES ||--o{ CONTENT : "has (parent_type=update)"
+    POST_PROPOSALS ||--o{ CONTENT : "has (parent_type=proposal)"
+    POST_EVENTS ||--o{ CONTENT : "has (parent_type=event)"
+
+    POSTS ||--o{ VOTES : "receives (resource_type=post)"
+    POST_PROPOSALS ||--o{ VOTES : "receives (resource_type=council)"
+    USERS ||--o{ VOTES : "casts"
+
+    PRODUCT_DISTRIBUTIONS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "has"
+    USER_ADDRESSES ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_address)"
+    USER_EMAILS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=user_email)"
+    PRODUCT_LINKS ||--o{ PRODUCT_DISTRIBUTION_ADDRESSES : "used as (addressable_type=product_link)"
