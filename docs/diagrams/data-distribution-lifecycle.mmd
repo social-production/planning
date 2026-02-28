@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> preparing : distribution created
+    preparing --> shipped : physical product dispatched
+    preparing --> downloaded : digital product downloaded
+    shipped --> received : user confirms receipt
+    downloaded --> [*]
+    received --> [*]
+    preparing --> cancelled : cancelled before dispatch
+    shipped --> returned : user returns item
+    returned --> [*]
+    cancelled --> [*]

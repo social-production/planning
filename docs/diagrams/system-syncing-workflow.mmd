@@ -1,0 +1,56 @@
+sequenceDiagram
+    participant API
+    participant KnownPeers as Known Peers
+    participant Storage
+    participant Network
+
+    API->>Network: sendCurrent
+    Network->>Network: compareCurrent
+    note over API,Network: async...
+
+    alt current
+        Network-->>API: current
+        note over API: done
+
+    else not current
+        Network-->>API: current
+        API->>Network: getChain
+        note over API,Network: async...
+        Network-->>API: chain
+        API->>Network: verifyChain
+        Network-->>API: chainStatus
+        note over API,Network: async...
+
+        alt not verified
+            note over API: done
+
+        else verified
+            API->>API: isIndexed
+
+            alt indexed
+                API->>Network: sync
+                note over API: done
+
+            else not indexed
+                API->>Storage: updateCurrent
+                API->>Storage: updateIndexes
+                API->>Network: getPeers
+                note over API,Network: async...
+                Network-->>API: peers
+                API->>Storage: updatePeers
+                API->>Network: getLatest
+                note over API,Network: async...
+                Network-->>API: latestTree
+                API->>Storage: updateTree
+                API->>Network: getData
+                note over API,Network: async...
+                Network-->>API: latestData
+                API->>Storage: updateData
+                API->>Network: getContent
+                note over API,Network: async...
+                Network-->>API: latestContent
+                API->>Storage: updateContent
+                note over API: done
+            end
+        end
+    end

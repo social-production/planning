@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant API
+    participant KnownPeers as Known Peers
+    participant Network
+
+    note over API,Network: Peer Discovery
+    API->>Network: findPeers
+    Network-->>API: peerResponse
+    API->>KnownPeers: savePeer
+    API->>Network: sync
+
+    note over API,Network: Join Network
+    API->>Network: joinNetwork
+    Network-->>API: sync

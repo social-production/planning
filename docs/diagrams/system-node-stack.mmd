@@ -1,0 +1,20 @@
+graph TB
+    subgraph NODE["Node"]
+        subgraph SYNC["Syncing"]
+            subgraph DB["Database"]
+                CONTENT["Content"]
+                subgraph IDX["Indexing"]
+                    CURRENT["Current"]
+                    INDEXES["Indexes"]
+                end
+            end
+            USERS["Users"]
+        end
+        subgraph DISC["Discovery"]
+            KNOWN["Known Peers"]
+        end
+        subgraph UM["User Management"]
+            NUSER["Node User"]
+            META["Meta Data"]
+        end
+    end
