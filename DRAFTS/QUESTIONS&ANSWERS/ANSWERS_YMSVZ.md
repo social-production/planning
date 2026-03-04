@@ -211,3 +211,61 @@ contributions are just a donation essentially. contributions are not tied to use
 **7. Do we need to consider cross-border complications from projects spanning across multiple countries? Shipping physical goods internationally? Tax laws in some jurisdictions? Local regulations on food/healthcare/other? Would we need legal counsel per major region eventually?**
 
 yeah very very likely. we talked earlier of even sub organizations per region where it might be necessary, of course under command from the overarching organization. but could be necessary in some jurisdictions to hold certain assets, simplify or reduce tax.
+
+---
+
+**8. We should also clearly document: what data does the platform collect and store? What's public vs. private?**
+
+Public by default: Project details, posts, votes cast (but not voting choices on user profiles), distribution allocations, moderation actions, funding
+
+Private: DMs between users, personal delivery addresses, if user funds a project their financial contribution amounts stay private (only totals are public)
+
+User control: Members set visibility for: full name vs. username, location (specific address vs. city/region only), contact details
+
+Data retention: All data preserved indefinitely for transparency. Users can delete their account but public participation history remains (anonymized to "deleted user")
+
+---
+
+**Communities are a proposed organisational layer for groups of people with a shared identity or real-world connection — a local chapter, an existing organisation, a neighbourhood group. They are social and organisational tools only. Communities do not own production, do not control distribution, and do not hold assets. Everything produced through the platform belongs to the collective regardless of which community's members produced it. A community is a club, not a cooperative within a cooperative.**
+
+**1. Is a community an optional feature or a core object all users exist within by default?**
+
+completely optional.
+
+---
+
+**2. Can a community be closed and should open or closed be the default?**
+
+i think they can be closed, but open by default. essentially just a club channel
+
+---
+
+**3. When someone is invited to a closed community is a membership vote automatically triggered?**
+
+yes i think so
+
+---
+
+**4. Does a community have its own internal governance or does it only use the platform-wide model?**
+
+i think it should follow platform wide model
+
+---
+
+**5. Can a community join a project as a unit, and if so do members vote individually or does the community cast a collective signal?**
+
+i think community can just connect to a project, community moderator essentially adds the tag to the community and the project is then posted in the feed of the community channel. individuals in the comminity signal, vote on plans of distribution and production as ordinary individuals.
+
+---
+
+**6. Can a community have internal discussion channels visible only to its members?**
+
+the community essentially acts as a discussion only channel. but can connect to projects 
+
+---
+
+**7. Does a community have its own internal moderator and how do they relate to channel moderators?**
+
+the community has moderators, essentially acts as a channel
+
+---
