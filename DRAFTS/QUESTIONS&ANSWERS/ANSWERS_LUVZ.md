@@ -6,7 +6,7 @@ These questions need team answers before the four planning documents can be fina
 
 ## Governance
 
-### Badges
+### Badges/Reputation
 
 **1. What actions earn a badge? (e.g. creating first project, completing X projects, voting X times, participating across different categories)**
 
@@ -300,3 +300,70 @@ Data retention: All data preserved indefinitely for transparency. Users can dele
 
 
 ---
+
+**Storage**
+
+**1. Is a warehouse/storage facility its own project type on the platform, with managers and governance like any other project?**
+
+
+---
+
+**2. Who can deposit into collective storage — any production project, or does a vote authorise what gets stored?**
+
+
+---
+
+**3. Who can request from collective storage — any project manager, or does it require a member vote within the requesting project?**
+
+
+---
+
+**4. When stock is limited and multiple projects need the same resource, how is priority decided — FIFO, urgency signal, community vote?**
+
+---
+
+**5. Is storage location tied to region — does a New York warehouse serve New York projects by default, or is stock platform-wide?**
+
+---
+
+**6. How is inventory tracked — in the platform database with on-chain records for every movement in and out?**
+
+---
+
+**7. Does stored stock have an expiry or review cycle — for example perishable goods or equipment that degrades?**
+
+
+---
+
+**Inter-Project Linking and Interest Signalling**
+
+**8. Can a project formally link to another project to signal it is a downstream recipient of its output?**
+
+
+---
+
+**9. Who initiates a link — the producing project, the receiving project, or either?**
+
+
+---
+
+**10. Does linking require a vote from the producing project's members to accept the receiving project as a recipient in their distribution plan?**
+
+
+---
+
+**11. Can a project signal interest in future production before a production project even exists — feeding into the suggestion list as a demand signal?**
+
+
+---
+
+**12. Can multiple projects link to the same production project, and if so how is the available output divided between them?**
+
+
+---
+
+**13. Is the full map of linked projects publicly visible so the community can see the supply chain forming around a production effort?**
+
+
+---
+

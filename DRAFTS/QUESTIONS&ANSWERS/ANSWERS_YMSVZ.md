@@ -6,7 +6,7 @@ These questions need team answers before the four planning documents can be fina
 
 ## Governance
 
-### Badges
+### Badges/Reputation
 
 **1. What actions earn a badge? (e.g. creating first project, completing X projects, voting X times, participating across different categories)**
 
@@ -269,3 +269,73 @@ the community essentially acts as a discussion only channel. but can connect to 
 the community has moderators, essentially acts as a channel
 
 ---
+
+**Storage**
+
+**1. Is a warehouse/storage facility its own project type on the platform, with managers and governance like any other project?**
+
+yes
+---
+
+**2. Who can deposit into collective storage — any production project, or does a vote authorise what gets stored?**
+
+any production project
+---
+
+**3. Who can request from collective storage — any project manager, or does it require a member vote within the requesting project?**
+
+project manager after production plan finalized, receiving project manager at warehouse, confirms (or possibly flags request for discussion) and sends material. production manager at project confirms receival of material. all recorded on blockchain
+---
+
+**4. When stock is limited and multiple projects need the same resource, how is priority decided — FIFO, urgency signal, community vote?**
+
+fifo
+---
+
+**5. Is storage location tied to region — does a New York warehouse serve New York projects by default, or is stock platform-wide?**
+
+platform wide, 
+---
+
+**6. How is inventory tracked — in the platform database with on-chain records for every movement in and out?**
+
+yes absolutely
+---
+
+**7. Does stored stock have an expiry or review cycle — for example perishable goods or equipment that degrades?**
+
+yes definitely. also some stock needs stored seperately, fuel and fire hazard material for example
+---
+
+**Inter-Project Linking and Interest Signalling**
+
+**8. Can a project formally link to another project to signal it is a downstream recipient of its output?**
+
+yes
+---
+
+**9. Who initiates a link — the producing project, the receiving project, or either?**
+
+receiving project manager initiates, producing project manager accepts
+---
+
+**10. Does linking require a vote from the producing project's members to accept the receiving project as a recipient in their distribution plan?**
+
+no they would just be signalled under demand, to be considered  by users/ai suggestions when creating a distribution and production plan. link does not guarantee allocation, just signals demand and consideration
+---
+
+**11. Can a project signal interest in future production before a production project even exists — feeding into the suggestion list as a demand signal?**
+
+yes absolutely
+---
+
+**12. Can multiple projects link to the same production project, and if so how is the available output divided between them?**
+
+yes they can. they would come under demand signal, and in production and distribution plans would be considered
+---
+
+**13. Is the full map of linked projects publicly visible so the community can see the supply chain forming around a production effort?**
+
+yes sounds like a great idea
+---
+
