@@ -261,3 +261,42 @@ Private: DMs between users, personal delivery addresses, if user funds a project
 User control: Members set visibility for: full name vs. username, location (specific address vs. city/region only), contact details
 
 Data retention: All data preserved indefinitely for transparency. Users can delete their account but public participation history remains (anonymized to "deleted user")
+
+---
+
+**Communities are a proposed organisational layer for groups of people with a shared identity or real-world connection — a local chapter, an existing organisation, a neighbourhood group. They are social and organisational tools only. Communities do not own production, do not control distribution, and do not hold assets. Everything produced through the platform belongs to the collective regardless of which community's members produced it. A community is a club, not a cooperative within a cooperative.**
+
+**1. Is a community an optional feature or a core object all users exist within by default?**
+
+
+---
+
+**2. Can a community be closed and should open or closed be the default?**
+
+
+---
+
+**3. When someone is invited to a closed community is a membership vote automatically triggered?**
+
+
+---
+
+**4. Does a community have its own internal governance or does it only use the platform-wide model?**
+
+
+---
+
+**5. Can a community join a project as a unit, and if so do members vote individually or does the community cast a collective signal?**
+
+
+---
+
+**6. Can a community have internal discussion channels visible only to its members?**
+
+
+---
+
+**7. Does a community have its own internal moderator and how do they relate to channel moderators?**
+
+
+---
