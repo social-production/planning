@@ -113,6 +113,7 @@ Projects are created by users. All members may propose rules for distribution, p
 | Document | Description |
 |---|---|
 | [README.md](README.md) | Project overview, architecture, and governance summary |
+| [TECH_ARCHITECTURE.md](TECH_ARCHITECTURE.md) | Primary implementation-facing architecture and stack plan |
 | [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) | System design: network and clients architecture |
 | [PLAN.md](PLAN.md) | Full project plan, architecture details, and governance rules |
 | [DATA.md](DATA.md) | Database schema, entity relationships, and diagrams |
