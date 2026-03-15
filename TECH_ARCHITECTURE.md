@@ -191,7 +191,7 @@ The current repository says a transaction is valid when verified by a minimum of
 The planning default is pBFT-style quorum finality using Full nodes. This does not require a separate permanent validator class.
 
 - Transactions are broadcast to peers
-- Eligible Full nodes validate transaction signatures, permissions, and state-transition rules
+- Full nodes validate transaction signatures, permissions, and state-transition rules
 - A block or batch is finalized only after signatures from at least three distinct trusted Full nodes
 - Finalized batches are appended to the local chain and applied to the projection database
 
