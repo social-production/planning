@@ -152,4 +152,14 @@ By starting with real projects that prove the model works, then expanding across
 
 ## Links
 
-- Original pitch page: [PITCH_PAGE.md](PITCH_PAGE.md)
+- Platform repository: [(https://github.com/social-production)]
+- Governance documentation: [(https://github.com/social-production/planning/blob/main/DRAFTS/GOVERNANCE.md)]
+- Legal structure: [https://github.com/social-production/planning/blob/main/DRAFTS/LEGAL_ASSET_HOLDING.md]
+- Distribution model: [https://github.com/social-production/planning/blob/main/DRAFTS/DISTRIBUTION.md]
+- Projects Roadmap: [(https://github.com/social-production/planning/blob/main/DRAFTS/PRODUCTION.md)]
+- System Design: [(https://github.com/social-production/planning/blob/main/SYSTEM_DESIGN.md)]
+- Discord: [(https://discord.gg/34fev8umNh)]
+
+---
+
+*We're building the infrastructure for post-capitalist production. It starts with a few projects and a small community. It's victorious when participation in capitalism is no longer required.*
