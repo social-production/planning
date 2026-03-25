@@ -113,7 +113,10 @@ Projects are created by users. All members may propose rules for distribution, p
 | Document | Description |
 |---|---|
 | [README.md](README.md) | Project overview, architecture, and governance summary |
-| [TECH_ARCHITECTURE.md](TECH_ARCHITECTURE.md) | Primary implementation-facing architecture and stack plan |
-| [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) | System design: network and clients architecture |
+| [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md) | Working draft for governance, production, and distribution operations |
+| [DRAFTS/LEGAL.md](DRAFTS/LEGAL.md) | Working draft for legal structure and asset stewardship |
+| [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md) | Primary implementation-facing architecture and stack plan |
+| [ARCHITECTURE/SYSTEM_DESIGN.md](ARCHITECTURE/SYSTEM_DESIGN.md) | System design: network and clients architecture |
 | [PLAN.md](PLAN.md) | Full project plan, architecture details, and governance rules |
-| [DATA.md](DATA.md) | Database schema, entity relationships, and diagrams |
+| [ARCHITECTURE/DATA.md](ARCHITECTURE/DATA.md) | Database schema, entity relationships, and diagrams |
+| [OUTREACH/PITCH_PAGE.md](OUTREACH/PITCH_PAGE.md) | Public-facing pitch and summary document |
