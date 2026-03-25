@@ -11,7 +11,7 @@ The goal of this document is to define how the platform should be built across t
 - Data and storage
 - Governance and legal integration
 
-## 1. System Overview
+## System Overview
 
 Social Production is a peer-to-peer platform for organizing collective production, governance, funding, and distribution without relying on centralized application servers as the system authority.
 
@@ -22,9 +22,9 @@ The architecture is built around four rules:
 3. Assets and large content are distributed separately from the blockchain using content-addressed storage.
 4. Governance decisions become real-world actions only when they are recorded on-chain and then executed by the legal stewarding entity.
 
-## 2. Core Decisions
+## Core Decisions
 
-### 2.1 Stack
+### Stack
 
 - Rust for the backend, node runtime, sync engine, and consensus logic
 - Flutter for desktop, mobile, and web clients
@@ -33,23 +33,23 @@ The architecture is built around four rules:
 - Merkle-based indexes for sync verification and content-state comparison
 - Blockchain for ordered transaction history and final state verification
 
-### 2.2 Node Model
+### Node Model
 
-Every app instance can connect to a node. A node may run inside the same device as the app or as a separate process.
+Every app instance can connect to a node. A node may run inside the same device as the app or as a separate process. The node **must** be run locally; only node to node communication is supported for remote synching.
 
 Three node modes remain part of the design:
 
 - Full: validates transactions, syncs the full blockchain, stores all application data while practical, and serves content to other peers
-- Light: syncs the blockchain and query state, but downloads larger content and assets on demand
-- Gossip: participates in discovery, transaction propagation, and limited sync without full content storage
+- Light: syncs the blockchain and query state, but downloads content and assets on demand
+- Gossip: participates in discovery, transaction propagation, and limited sync without content storage
 
 Operational defaults:
 
-- Mobile devices should default to Light mode
-- Desktop devices may default to Light mode and allow an explicit switch to Full mode
+- Mobile devices should default to Light mode and allow an explicit switch to Full mode
+- Desktop devices may default to Full mode and allow an explicit switch to Light mode
 - Dedicated always-on machines are the expected first high-availability Full nodes
 
-### 2.3 Identity Model
+### Identity Model
 
 Node identity and user identity are separate.
 
@@ -60,7 +60,7 @@ A user may operate across multiple devices by transferring credentials to anothe
 
 This resolves the conflict in older notes that treated device identity as if it were the permanent user identity.
 
-### 2.4 Storage Evolution
+### Storage Evolution
 
 The storage model is:
 
@@ -71,9 +71,9 @@ The storage model is:
 
 This means sharding is a scale transition for content storage, not the base architecture for the network.
 
-## 3. System Layers
+## System Layers
 
-### 3.1 Blockchain Layer
+### Blockchain Layer
 
 The blockchain stores ordered transactions and finality metadata. It does not store large assets or full query-ready documents.
 
@@ -85,9 +85,11 @@ Responsibilities:
 - Produce deterministic state changes
 - Expose finalized history for replay and audit
 
-### 3.2 Projection Database Layer
+This is the remote record of changes over time across the network.
 
-Each node maintains a local relational projection database derived from blockchain transactions.
+### Database Layer
+
+Each node maintains a local relational database. This is the local source of truth.
 
 Responsibilities:
 
@@ -96,184 +98,176 @@ Responsibilities:
 - Support indexing and filtering for app features
 - Rebuild from blockchain history when needed
 
-This layer is queryable state, not the system of record.
+This layer is the local system of record.
 
-### 3.3 Content and Asset Layer
+### Content and Asset Layer
 
-Assets, attachments, media, and other large blobs live outside the blockchain in content-addressed storage.
+Data, assets, and media live outside the blockchain in content-addressed storage.
 
 Responsibilities:
 
-- Store blobs by content hash
-- Deduplicate identical content
+- Store data by content hash
 - Replicate content according to node mode and storage policy
 - Support on-demand fetches for light nodes
 - Transition to sharded plus replicated storage at larger scale
 
-### 3.4 Client Layer
+### Client Layer
 
 Flutter clients present the user interface and interact with a node service over gRPC.
 
 Responsibilities:
 
-- Read from local or attached node state
-- Create signed intents and transactions
-- Show pending, confirmed, and finalized states
-- Handle offline usage and later reconciliation
+- Communicates with the local node state
+- Acts as an interface for users to interact with the node
 
-## 4. Transaction Model
+## Blockchain Model
 
-The current phrase “everything is a transaction” is too broad for implementation. The system should instead use explicit transaction families.
+### Block Creation
 
-### 4.1 Transaction Families
+- Nodes have a 1 minute window in which transactions can be created
+- Nodes cycle this window every 1 minute
+- If a node has transactions within that 1 minute time window, a block is created with those transaction and transmitted to their Full node peers
 
-- Identity: user registration, profile edits, account deactivation
-- Membership: join post, role changes, manager promotion, manager removal
-- Posts and projects: create post, edit post, change project status, post updates
-- Content: comments, post content changes, updates, proposal content, event content
-- Governance: create proposal, cast vote, close proposal, moderation action
-- Funding: create fund drive, contribute funds, cancel fund drive, record withdrawal or distribution event
-- Events: create event, edit event, cancel event, RSVP changes
-- Products and distributions: create product, create distribution, update distribution status, attach digital delivery link
-- Network: node registration, node capability updates, node removal
-
-### 4.2 Transaction Shape
+### Transaction Model
 
 Each transaction should have the following fields:
 
-- transaction_id
-- transaction_type
-- actor_id
-- resource_type
-- resource_id
-- payload_version
-- payload
-- previous_state_hash when required for guarded updates
-- timestamp
-- signature
+- transaction_id: string
+- node_id: string
+- user_id: string
+- content_tree: string
+- timestamp: timestamp in unix format
+- signature: string
 
-Each block or batch should have:
+### Block Model
 
-- block_id
-- previous_block_hash
-- ordered transaction list
-- merkle_root
-- proposer node id
-- participating full-node signatures
-- finalized_at
+Each block should have the following fields:
 
-### 4.3 On-Chain and Off-Chain Boundary
+- originating_node_id: string
+- block_hash: string
+- previous_block_hash: string
+- transactions: list of transaction
+- signature: string
+- transactions_hash: string
+- peer_signatures: list of peer_signature
+
+### Peer Signature Model
+
+A peer signature has the following fields:
+
+- node_id: string
+- signature: string
+
+### On-Chain and Off-Chain Boundary
 
 On-chain:
 
-- State-changing events
-- Governance decisions and votes
-- Membership and role changes
-- Funding and distribution state changes
-- References to off-chain content hashes
-- Finality metadata
+- Record that data has changed
 
 Off-chain:
 
-- Large text bodies if they exceed practical transaction size limits
-- Images, video, documents, and downloadable assets
-- Query projections and local indexes
-- Cached search and feed results
+- Actual data changes
 
-Rule: if an event changes platform state, the event is on-chain. If the payload is too large to belong in the chain, the hash and reference stay on-chain while the blob stays off-chain.
-
-## 5. Consensus and Finality
+## Consensus and Finality
 
 The current repository says a transaction is valid when verified by a minimum of three nodes. The architecture discussions add two more important details: the project uses pBFT-style finality, and reputation affects which nodes are trusted by default when branches or bad actors appear.
 
-### 5.1 Planning Default
+### Planning Default
 
 The planning default is pBFT-style quorum finality using Full nodes. This does not require a separate permanent validator class.
 
-- Transactions are broadcast to peers
-- Full nodes validate transaction signatures, permissions, and state-transition rules
-- A block or batch is finalized only after signatures from at least three distinct trusted Full nodes
-- Finalized batches are appended to the local chain and applied to the projection database
+A quorom consists of at least 2/3 of known Full peers in network; with a minimum of 3 for the smallest network.
+
+When a block has been created:
+
+- The block is transferred to peers for votes
+- Full node peers validate signatures
+- Full node peers ensure the previous_block_hash correctly points to a valid block
+- Full node peers sign the transactions and append their signature to the block peer_signatures
+- Full node peers transfer the block to their Full node peers minus peers that have already signed the block
+
+Once at least a quorum of Full node peers have signed a block and the peers that have signed pass a reputation validation:
+
+- The block is transferred to all remaining peers and is considered part of the blockchain
+- Full node peers sync with node ids in the transaction to update local data
+
+If there is a conflict between two blocks that are fully validated:
+
+- Both blocks are kept until a future round of block validation provides a clear winner
+- The losing block is discarded
 
 In plain terms:
 
 - Full nodes do the validation work
 - pBFT-style quorum is the mechanism that turns validation into finality
-- Reputation is the trust filter that decides which nodes are accepted by default when conflicts happen
+- Reputation is the trust filter that decides which nodes are filtered out by default
 
-### 5.2 Reputation and Trust
+### Reputation and Trust
 
 The network should maintain a reputation model tied to users and their nodes.
 
 - New nodes start at the default trusted threshold
 - Bad behavior lowers reputation
-- Nodes following the default trust threshold discount or reject low-reputation votes during conflict resolution
+- Nodes following the default trust threshold discount or reject low-reputation votes
 - If a user lowers their own trust threshold and follows weaker peers, their own trust standing drops accordingly in the default network
 
 This means reputation does not replace finality. It shapes whose validation counts as trustworthy in the default network view.
 
-### 5.3 Validation Rules
+### Validation Rules
 
 Validation checks must include:
 
-- Actor signature is valid
-- Actor has permission to perform the action
-- Target resource exists when required
-- Status transition is legal
-- Duplicate or replayed transaction is rejected
-- Referenced off-chain content hash exists when required
+- The user signature is valid
+- The transactions_hash is a valid hash of all transactions
+- The previous_block_hash points to:
+  - An actual previously validated block_hash
+  - Or, a previously contested block_hash
 
-### 5.4 Finality and Fork Handling
+### Finality and Fork Handling
 
 The initial implementation should prefer deterministic finality over long-lived forks.
 
-- Nodes do not treat a transaction as final until the batch has quorum signatures
+- Nodes do not treat a transaction as final until the block has quorum peer signatures
 - Competing non-finalized branches may exist briefly during propagation
-- If a node sees conflicting non-finalized branches, it follows the branch with valid quorum completion from trusted peers first
-- Finalized history is authoritative for projection rebuilds and governance execution
+- If there is a conflict between two blocks that are fully validated:
+  - Both blocks are kept until a future round of block validation provides a clear winner
+  - The losing block is discarded
+- If a node sees conflicting finalized branches, it follows the branch with valid quorum completion from trusted (e.g. reputation filter based) peers first
+- Finalized history is authoritative for database rebuilds and governance execution
 
 This keeps the model close to the existing “3-node verification” rule while making the implementation boundary explicit: reputation helps determine trusted validation, and pBFT-style quorum produces finality.
 
-## 6. Data and Storage Architecture
+## Data and Storage Architecture
 
-### 6.1 Source of Truth
+### Source of Truth
 
 - Blockchain: immutable ordered event log
-- Projection database: current queryable application state
-- Content-addressed storage: assets and large content blobs
+- Local Database: local application state
 
-### 6.2 Relational Projection Model
+### Relational Projection Model
 
-The relational model defined in [DATA.md](DATA.md) remains the basis for application reads, but it should be treated as a derived state model.
+The relational model defined in [DATA.md](DATA.md) remains the basis for the application.
 
-Tables and entities such as users, posts, proposals, fund drives, distributions, events, assets, and votes should all be updated by applying finalized blockchain transactions.
+Changes triggered notated through the blockchain should trigger syncs with peers to update the relational data only.
 
-### 6.3 Merkle Indexes
+### Merkle Indexes
 
 Merkle indexes are used to:
 
-- Detect chain or content-state divergence
+- Detect content-state divergence
 - Verify sync correctness
 - Compare known state between peers
 - Support targeted sync instead of blind re-download
 
-The Merkle index is not a replacement for either the chain or the relational projection.
+The Merkle index is not a replacement for either the blockchain or the relational database structure.
 
-### 6.4 Storage Scaling Path
+### Storage Scaling Path
 
 Early scale:
 
-- Full nodes keep the entire chain and full off-chain content set while practical
-- Light nodes keep the chain and smaller local caches
-
-Later scale:
-
-- Full validating nodes still keep the full chain
-- Off-chain blobs are partitioned across shards
-- Each shard is replicated across multiple full-capacity storage peers
-- Light nodes continue on-demand retrieval using content hashes and peer discovery
-
-Video and large media are the primary storage pressure, so shard planning should be driven by blob storage growth rather than by the transaction ledger first.
+- Full nodes keep the entire blockchain, local caches, and sharded off-chain content
+- Light nodes keep the blockchain and local caches
+- Each shard is replicated across multiple Full node peers
 
 ### 6.5 Compression and Encoding Defaults
 
@@ -281,99 +275,79 @@ Compression should be selected by data type rather than applied as one global ru
 
 - Text and structured payloads: Zstandard for storage and backup compression
 - Network transfer for text responses: Brotli when supported, gzip as fallback
-- Images: transcode to WebP or AVIF where platform compatibility allows
-- Video: use modern codecs such as H.265 or AV1 when processing cost is acceptable
+- Images: transcode to WebP or AVIF (for GIFs)
+- Video: use H.265
+- Audio: use FLAC
 
-The blockchain should store references and hashes, not compressed media blobs.
+## P2P Networking and Sync
 
-## 7. P2P Networking and Sync
-
-### 7.1 Discovery
+### Discovery
 
 - Kademlia for remote peer discovery
 - mDNS for local peer discovery
 - Known peers stored locally and periodically health-checked
 
-### 7.2 Propagation
+### Propagation
 
 The network should propagate two classes of data:
 
-- Chain data: transactions, block candidates, finalized batches, and state proofs
-- Blob data: assets and larger content addressed by hash
+- Blockchain: transactions which have merkle trees of the data
+- Data: all the actual data
 
 These should be handled separately so large content does not slow down transaction finality.
 
-### 7.3 Sync Flow
+### Sync Flow
 
-Chain sync:
+Blockchain sync:
 
-1. Compare chain height, finalized batch id, and Merkle root with peers.
-2. Request missing finalized batches.
-3. Verify quorum signatures and Merkle proofs.
-4. Apply transactions to the local projection database.
+1. Compare last block with peers
+2. Request missing finalized blocks
+3. Verify quorum signatures
+4. Apply transactions to the local database
 
-Blob sync:
+Data sync:
 
-1. Compare locally available content hashes against referenced hashes.
-2. Download missing blobs according to node mode and storage policy.
-3. Verify content hashes before marking blobs available.
+1. Build merkle tree from last block transactions applied in sequence by timestamp
+2. Compare current merkle tree root hash to new merkle tree
+3. Download missing data (as noted by missing merkle tree hashes) from peers
+4. Apply data to local database and storage
 
-### 7.4 Mode-Specific Behavior
+### Mode-Specific Behavior
 
 Full mode:
 
 - Validates transactions
 - Participates in quorum finality
-- Serves chain data and blob data
-- Stores full query state
+- Serves blockchain and data
 
 Light mode:
 
-- Syncs finalized chain and query state
-- Requests blobs on demand
-- May cache recent or user-relevant content only
+- Syncs finalized blockchain and local data
+- Requests data on demand
+- Caches recent local and downloaded data
 
 Gossip mode:
 
 - Participates in discovery and propagation
-- May keep partial chain state depending on implementation limits
-- Does not need to serve the full blob set
 
-## 8. Service Boundaries and gRPC
+## Service Boundaries and gRPC
 
-Flutter clients should not talk directly to chain storage internals. They should interact with a node service.
+Clients talk only to the local node
 
-### 8.1 Service Groups
-
-- Identity service
-- Feed and post service
-- Governance service
-- Funding service
-- Event service
-- Distribution service
-- Sync status service
-- Asset service
-- Node admin service
-
-### 8.2 gRPC Responsibilities
+### gRPC Responsibilities
 
 gRPC should handle:
 
-- Query requests against projection state
-- Transaction submission
-- Upload and download coordination for assets
-- Sync and health status
+- Query requests against local database
 - Local node configuration and mode inspection
 
-### 8.3 API Direction
+### API Direction
 
-The first protobuf definitions should be designed around transaction submission plus read models, not around direct table mutation.
+The API should only expose local database operations. All creative, modifying, or destructive database operations create transactions in the node.
 
-That keeps the client aligned with the event-driven architecture.
+## Stack Implementation Plans
 
-## 9. Stack Implementation Plans
-
-### 9.1 Rust Backend and Node Runtime
+### Rust Backend and Node Runtime
 
 Primary modules:
 
@@ -381,68 +355,60 @@ Primary modules:
 - Peer discovery and peer registry
 - Transaction validator
 - Batch builder and finality coordinator
-- Chain storage engine
-- Projection database applier
-- Blob storage manager
+- Blockchain engine
+- Database controller
+- Storage manager
 - gRPC service host
 - Local configuration and node-mode manager
 
 Implementation order:
 
 1. Node bootstrap and configuration
-2. Chain storage and transaction schema
+2. Blockchain schema
 3. Validation and finality pipeline
-4. Projection applier
-5. gRPC read and submit endpoints
-6. Blob storage and on-demand retrieval
+4. Database controller
+5. gRPC endpoints
+6. Storage and on-demand retrieval
 7. Mode-specific behavior controls
 
-### 9.2 Flutter Clients
+### Flutter Clients
 
 Primary responsibilities:
 
-- Authentication and local identity handling
 - Feed, project, governance, funding, and distribution views
-- Transaction composition and signing
-- Pending versus finalized state presentation
-- Offline-first interaction with later sync
+- Blockchain and network presentation
 - Asset upload and on-demand media loading
 
 Implementation order:
 
 1. Local app shell and navigation
 2. gRPC client integration
-3. Read-model screens from projection state
-4. Transaction submission flows
-5. Pending-state UX
-6. Offline cache and reconciliation behavior
+3. UI Views
 
-### 9.3 P2P Networking and Sync Layer
+### P2P Networking and Sync Layer
 
 Primary responsibilities:
 
 - Peer discovery
 - Peer health checks
-- Chain propagation
-- Finalized batch sync
-- Blob lookup and retrieval
+- Blockchain propagation
+- Finalized block sync
+- Data lookup and retrieval
 - Merkle proof verification
-- Replay and recovery flows
 
 Implementation order:
 
 1. Discovery and peer registry
-2. Chain synchronization
-3. Batch propagation and validation relay
-4. Blob propagation and retrieval
+2. Blockchain synchronization
+3. Block propagation and validation relay
+4. Data propagation and retrieval
 5. Divergence detection and recovery
 
-### 9.4 Blockchain and Finality Layer
+### Blockchain and Finality Layer
 
 Primary responsibilities:
 
-- Transaction schema and serialization
-- Signature verification
+- Verification
 - Authorization checks
 - Deterministic state transitions
 - Quorum-finality signatures
@@ -450,32 +416,22 @@ Primary responsibilities:
 
 Implementation order:
 
-1. Transaction family definitions
-2. Batch structure and merkle root generation
+1. Verification rules
+2. Block structure
 3. Validator signature flow
 4. Finality checks and branch resolution
-5. Rebuild-from-chain tooling
 
-### 9.5 Data and Storage Layer
+### Data and Storage Layer
 
 Primary responsibilities:
 
 - Relational schema refinement
-- Projection rebuilds
-- Secondary indexes for feed and governance queries
-- Blob metadata tracking
-- Retention and cache rules
-- Sharding transition planning for large-scale blobs
 
 Implementation order:
 
-1. Map each entity in [DATA.md](DATA.md) to transaction families
-2. Define projection update rules
-3. Add indexes for expected query patterns
-4. Add blob metadata and replication tracking
-5. Plan shard metadata for later scale
+1. Define Database rules
 
-### 9.6 Governance and Legal Integration
+### Governance and Legal Integration
 
 Primary responsibilities:
 
@@ -487,12 +443,12 @@ Primary responsibilities:
 
 Implementation order:
 
-1. Define proposal transaction types
+1. Define proposal types
 2. Define vote and tally transactions
 3. Define execution status records for legal or financial actions
 4. Define review and audit queries
 
-## 10. Governance and Legal Execution
+## Governance and Legal Execution
 
 The foundation is not a control hub for the network. It is the legal steward for real-world assets and obligations.
 
@@ -506,7 +462,7 @@ The execution model is:
 
 This keeps platform governance inside the protocol while still handling bank accounts, property, and similar external assets lawfully.
 
-## 11. Security and Failure Model
+## Security and Failure Model
 
 The first implementation should explicitly defend against:
 
@@ -514,46 +470,43 @@ The first implementation should explicitly defend against:
 - Unauthorized edits or role changes
 - Double-voting
 - Invalid state transitions
-- Blob tampering through hash mismatch
+- Data tampering through hash mismatch
 - Nodes advertising data they cannot actually provide
 - Temporary network partitions
 
 Basic requirements:
 
 - Signed transactions
-- Content-hash verification for blobs
+- Content-hash verification for data
 - Permission checks on every state-changing action
 - Deterministic validation rules across full nodes
-- Rebuildable projection state from finalized history
+- Rebuildable database state from finalized history
 
-## 12. Delivery Phases
+## Delivery Phases
 
 ### Phase 1
 
-- Finalize transaction families
-- Finalize batch and finality format
-- Build Rust node bootstrap, chain store, and projection applier
-- Build Flutter read-only shell against mocked or local data
+- Finalize block and finality format
+- Build Rust node bootstrap, blockchain store, and projection applier
+- Build Flutter client against mocked or local data
 
 ### Phase 2
 
 - Add transaction submission flows
 - Add governance, funding, and event paths
-- Add light-node blob retrieval
-- Add sync health and recovery tooling
+- Add light-node data retrieval
+- Add sync health tooling
 
 ### Phase 3
 
 - Harden validation and conflict handling
 - Optimize indexing and projection queries
-- Add blob replication controls
-- Measure when full-node blob storage becomes impractical
+- Add data replication controls
 
 ### Phase 4
 
-- Introduce sharded plus replicated blob storage
-- Keep the finalized chain and governance model stable
-- Add shard placement, replication policy, and recovery procedures
+- Keep the finalized blockchain and governance model stable
+- Add shard placement and replication policy procedures
 
 ## 13. Immediate Next Documents
 
@@ -563,9 +516,9 @@ This document should be followed by more specific implementation documents in th
 2. gRPC and protobuf specification
 3. Projection-database rules and indexes
 4. Sync protocol specification
-5. Blob replication and sharding specification
+5. Data replication and sharding specification
 
-## 14. Relationship to Existing Docs
+## Relationship to Existing Docs
 
 - [README.md](README.md) stays the high-level project summary.
 - [PLAN.md](PLAN.md) stays the broad planning document.
@@ -574,4 +527,4 @@ This document should be followed by more specific implementation documents in th
 - [LEGAL.md](LEGAL.md) remains the legal summary.
 - The DRAFTS folder remains supporting product and governance material.
 
-Where this document and older summaries differ, this document should be treated as the architecture baseline for implementation work.
+Where this document and older summaries differ, this document should be treated as the architecture guide for implementation work.
