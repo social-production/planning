@@ -4,15 +4,6 @@ A community platform for organising collective projects, pooling resources, and 
 
 Post ideas, recruit members, schedule meetups, organize labor and collectively fund shared goals, with collective ownership of the results.
 
-## New Contributors
-
-If you are new, start with:
-
-1. [CONTRIBUTOR_GUIDE.md](CONTRIBUTOR_GUIDE.md)
-2. [CURRENTLY_WORKING_ON.md](CURRENTLY_WORKING_ON.md)
-
-This file is a high-level summary. For the current implementation-facing direction, prefer [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md). For the current operating model, prefer [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md).
-
 ## Technologies used
 
 - Rust
