@@ -1,6 +1,6 @@
 # Social Production Technical Architecture
 
-This document is the implementation-facing source of truth for the Social Production system architecture. It consolidates the architecture decisions that were previously split across [README.md](README.md), [PLAN.md](PLAN.md), [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md), [DATA.md](DATA.md), [LEGAL.md](LEGAL.md), and the planning drafts.
+This document is the implementation-facing source of truth for the Social Production system architecture. It consolidates the architecture decisions that were previously split across [../README.md](../README.md), [../PLAN.md](../PLAN.md), [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md), [DATA.md](DATA.md), [../DRAFTS/LEGAL.md](../DRAFTS/LEGAL.md), and the planning drafts.
 
 The goal of this document is to define how the platform should be built across the main stacks:
 
@@ -520,11 +520,12 @@ This document should be followed by more specific implementation documents in th
 
 ## Relationship to Existing Docs
 
-- [README.md](README.md) stays the high-level project summary.
-- [PLAN.md](PLAN.md) stays the broad planning document.
+- [../README.md](../README.md) stays the high-level project summary.
+- [../PLAN.md](../PLAN.md) stays the broad planning document.
+- [../DRAFTS/OPERATIONS_MODEL.md](../DRAFTS/OPERATIONS_MODEL.md) is the current draft operational reference for governance, production, and distribution.
 - [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) remains a supporting workflow and diagram reference.
 - [DATA.md](DATA.md) remains the domain and schema reference.
-- [LEGAL.md](LEGAL.md) remains the legal summary.
-- The DRAFTS folder remains supporting product and governance material.
+- [../DRAFTS/LEGAL.md](../DRAFTS/LEGAL.md) is the current draft legal asset stewardship reference.
+- The DRAFTS folder remains supporting material for unresolved questions and working notes.
 
 Where this document and older summaries differ, this document should be treated as the architecture guide for implementation work.
