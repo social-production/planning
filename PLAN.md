@@ -4,6 +4,15 @@ A community platform for organising collective projects, pooling resources, and 
 
 Post ideas, recruit members, schedule meetups, organize labor and collectively fund shared goals, with collective ownership of the results.
 
+## New Contributors
+
+If you are new, start with:
+
+1. [CONTRIBUTOR_GUIDE.md](CONTRIBUTOR_GUIDE.md)
+2. [CURRENTLY_WORKING_ON.md](CURRENTLY_WORKING_ON.md)
+
+This file is a high-level summary. For the current implementation-facing direction, prefer [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md). For the current operating model, prefer [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md).
+
 ## Technologies used
 
 - Rust
@@ -11,7 +20,7 @@ Post ideas, recruit members, schedule meetups, organize labor and collectively f
 - GRPC
 - P2P
 - Blockchain
-- Merkle Tree
+- Merkle-based indexes for verification and sync comparison
 
 ## Platforms supported
 
@@ -47,19 +56,16 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
   - Each app is a node on the network
   - A node server can be independent of running the app
   - A node can act as a gossip without downloading any assets
-  - Syncing will be done using a blockchain
+  - Syncing uses the blockchain for ordered transaction history and verification
 - Blockchain
-  - Only transactions live in the blockchain
-  - Transactions live in Merkle Trees as storage
-  - Synching will always sync all of the blockchain
-  - A transaction will be considered valid if the blockchain has been verified by a minimum of 3 nodes
+  - The blockchain stores ordered transactions and finality metadata
+  - Large assets and content live outside the blockchain
+  - Validating nodes sync the blockchain while off-chain data can be fetched separately
+  - Merkle-based indexes are used to compare state and verify sync efficiently between nodes
+  - The exact finality model is defined in [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md)
 - Transaction
   - A transaction can be any change event that has happened on the platform. For example:
     - A user was:
-      - Registered
-      - Edited
-      - Unregistered
-    - An Organization was:
       - Registered
       - Edited
       - Unregistered
@@ -97,6 +103,7 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
     - Sync based on a time range
     - Sync based on file size or disk availability
     - Sync on demand
+  - Merkle-based indexes can be compared between nodes to detect missing or mismatched state during sync
 
 ## Governance
 
@@ -119,7 +126,10 @@ Create an community driven economic ecosystem that doesn't rely on the capitalis
     - Can make proposals
     - Can vote on proposals
 - Voting rules
-  - A threshold of 70% must be yes for a vote to pass
-  - A minimum of 20% of the members must vote for a vote to pass
-  - A vote must be passed to remove a manager (e.g. the creator of the project)
-  - A vote must be passed to promote a member to a manager
+  - Members can vote yes, no, or abstain on competing proposals independently
+  - Outcomes are based on broad support and participation thresholds rather than only a fixed yes-percentage rule
+  - Participation thresholds scale with project size
+  - A passed vote is required to remove a manager
+  - A passed vote is required to promote a member to manager
+
+For the current governance direction, use [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md).

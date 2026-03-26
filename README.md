@@ -4,8 +4,18 @@ A community platform for organising collective projects, pooling resources, and 
 
 Post ideas, recruit members, schedule meetups, organise labor, and collectively fund shared goals — with collective ownership of the results.
 
+## New Contributors
+
+If you want to get up to speed quickly and start helping, begin here:
+
+1. [CONTRIBUTOR_GUIDE.md](CONTRIBUTOR_GUIDE.md)
+2. [CURRENTLY_WORKING_ON.md](CURRENTLY_WORKING_ON.md)
+
+Use the guide to understand the repo structure, source-of-truth documents, and the best first contribution paths.
+
 ## Table of Contents
 
+- [New Contributors](#new-contributors)
 - [Goals](#goals)
 - [Technologies](#technologies)
 - [Platforms](#platforms)
@@ -41,7 +51,7 @@ Build a community-driven economic ecosystem that doesn't rely on the capitalist 
 | Frontend | Flutter |
 | Communication | gRPC |
 | Networking | P2P |
-| Ledger | Blockchain + Merkle Trees |
+| Ledger | Blockchain + Merkle-based verification |
 
 ## Platforms
 
@@ -52,13 +62,15 @@ Build a community-driven economic ecosystem that doesn't rely on the capitalist 
 
 ## Architecture
 
+This summary is intentionally high level. For the current implementation-facing direction, use [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md).
+
 ### P2P Network
 
 Every app instance is a node on the network. A node server can run independently of the app UI. Nodes can act as gossip relays without downloading any assets.
 
 ### Blockchain
 
-Only transactions live on the blockchain, stored in Merkle Trees. The full blockchain is always synced. A transaction is considered valid once verified by a minimum of 3 nodes.
+The blockchain stores ordered transaction history and finality metadata, not large assets or full query-ready documents. The full blockchain is expected to sync across validating nodes. Merkle-based verification is used to compare and validate transaction or content state efficiently during sync. Finality details are defined in [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md).
 
 ### Transactions
 
@@ -75,6 +87,10 @@ Any change event on the platform is recorded as a transaction:
 - Votes cast
 - Node added or removed
 
+Large content and assets live outside the blockchain and are referenced separately.
+
+Merkle-based indexes support sync verification and content-state comparison between nodes, but they do not replace the blockchain as the authoritative record.
+
 ### Resource Management
 
 Assets and content can be synced at a granular level:
@@ -86,6 +102,8 @@ Assets and content can be synced at a granular level:
 ## Governance
 
 Projects are created by users. All members may propose rules for distribution, propose changes, and vote on proposals. Any user can join a project.
+
+The governance summary below is intentionally high level. For current planning details, use [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md).
 
 ### Roles
 
@@ -103,16 +121,17 @@ Projects are created by users. All members may propose rules for distribution, p
 
 ### Voting Rules
 
-- A proposal passes with **≥ 70% yes** votes
-- A minimum of **20% of members** must vote for the result to count
-- A vote is required to remove a manager (including the project creator)
-- A vote is required to promote a member to manager
+- Members can vote yes, no, or abstain on competing proposals independently.
+- Outcomes are based on broad support and participation thresholds, not just the highest raw vote total.
+- Participation thresholds scale with project size.
+- Role changes such as promoting or removing managers require a passed vote.
 
 ## Documentation
 
 | Document | Description |
 |---|---|
 | [README.md](README.md) | Project overview, architecture, and governance summary |
+| [CONTRIBUTOR_GUIDE.md](CONTRIBUTOR_GUIDE.md) | Fast onboarding guide for new contributors |
 | [DRAFTS/OPERATIONS_MODEL.md](DRAFTS/OPERATIONS_MODEL.md) | Working draft for governance, production, and distribution operations |
 | [DRAFTS/LEGAL.md](DRAFTS/LEGAL.md) | Working draft for legal structure and asset stewardship |
 | [ARCHITECTURE/TECH_ARCHITECTURE.md](ARCHITECTURE/TECH_ARCHITECTURE.md) | Primary implementation-facing architecture and stack plan |
