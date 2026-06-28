@@ -1,5 +1,9 @@
 # Legal
 
+Draft status: working draft, not final policy.
+
+This file is for human readers and legal review preparation. It can change as the governance and stewardship model is tightened.
+
 This document is the current working draft for Social Production's legal structure and asset stewardship model.
 
 ## Overview
@@ -38,11 +42,23 @@ Community funding for projects is held in escrow by the foundation until the pro
 
 If a project fails or is canceled before completion, committed funds are returned to contributors. All fund movements are recorded and publicly visible.
 
+Contributions are donations to the collective, not claims on project governance, project ownership, or repayment.
+
+Public fund totals and fund movements should remain transparent, but individual contribution amounts do not need to be publicly exposed when contributors choose anonymity or limited acknowledgement.
+
 ## Inter-Project Resource Flows
 
 There are no separate project treasuries. All assets and resources sit under a single holding structure. When one project produces materials that another project needs, this is not an exchange or a sale between separate entities. It is a movement of collectively held resources authorized by community governance and recorded as a transaction.
 
-Project creators and managers register produced quantities in the platform database. The blockchain records that a transfer event was authorized and executed. Receiving parties confirm receipt. The database holds operational detail and the blockchain holds the authorization record.
+Project creators and managers register produced quantities in the platform database. Sending managers initiate transfer records. Receiving project or storage managers confirm acceptance and later confirm receipt or dispatch. The blockchain records that a transfer event was authorized and executed. The database holds operational detail and the blockchain holds the authorization record.
+
+## Storage And Warehouses
+
+Warehouse, storage, and library facilities are still collective assets under the same stewardship model. Treating them as projects for operational purposes does not create separate ownership silos.
+
+Storage projects may receive deposits from production projects, hold inventory on behalf of the collective, and dispatch goods or materials to other projects or distribution flows.
+
+Any regional or jurisdiction-specific asset-holding structure that might later be needed for compliance is still an open legal question, not a settled part of the current organizational model.
 
 ## Dissolution
 
@@ -63,6 +79,8 @@ Foundation directors are appointed and removed solely through verified on-chain 
 Jurisdiction has not yet been decided. This is a significant decision because it affects asset holding, director liability, and tax status. Options to research with legal counsel include Switzerland, the Netherlands using a Stichting structure, Estonia, and other jurisdictions with established non-profit foundation law.
 
 This will be finalized once the governance and operational model is developed enough to demonstrate clearly how the foundation relates to on-chain governance in practice.
+
+It is also possible that regional sub-organizations or jurisdiction-specific steward structures may be needed later for tax, compliance, or asset-holding reasons, but that remains a future legal-design question rather than a current settled commitment.
 
 ## Status
 
